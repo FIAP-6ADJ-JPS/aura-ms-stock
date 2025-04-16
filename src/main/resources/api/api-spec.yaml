@@ -1,0 +1,23 @@
+openapi: 3.0.3
+info:
+  title: API Padrão
+  description: Documentação da API Padrão.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8082
+    description: Servidor local
+paths:
+  /exemplo:
+    get:
+      summary: Exemplo de endpoint
+      responses:
+        '200':
+          description: Resposta de sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensagem:
+                    type: string
+                    example: "Exemplo de resposta"
