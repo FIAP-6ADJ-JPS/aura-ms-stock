@@ -1,48 +1,37 @@
-package com.postech.auramsstock.database.jpa.entity;
+package com.postech.auramsstock.domain;
 
 import com.postech.auramsstock.domain.enums.StatusEnum;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+public class Stock {
 
-@Entity
-@Table(name = "STOCK")
-@AllArgsConstructor
-@NoArgsConstructor
-public class StockEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @Column(name = "SKU_PRODUCT", unique = true, nullable = false, length = 20)
     private String skuProduct;
-
-    @Column(name = "NAME_PRODUCT", nullable = false, length = 100)
     private String nameProduct;
-
-    @Column(name = "QUANTITY_ACTUAL", nullable = false, precision = 10, scale = 2)
     private Long quantity;
-
-    @Column(name = "TOTAL_VALUE", precision = 10, scale = 2)
     private BigDecimal totalValue;
-
-    @Column(name = "VALUE_UNIT", precision = 10, scale = 2)
     private BigDecimal valueUnit;
-
-    @Column(name = "VALUE_SALE", precision = 10, scale = 2)
     private BigDecimal valueSale;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "STATUS", nullable = false)
     private StatusEnum status;
-
-    @Column(name = "DT_REGISTER", nullable = false, updatable = false)
     private LocalDateTime dtRegister;
+
+    public Stock() {
+    }
+
+    public Stock(Integer id, String skuProduct, String nameProduct, Long quantity, BigDecimal totalValue,
+                 BigDecimal valueUnit, BigDecimal valueSale, StatusEnum status, LocalDateTime dtRegister) {
+        this.id = id;
+        this.skuProduct = skuProduct;
+        this.nameProduct = nameProduct;
+        this.quantity = quantity;
+        this.totalValue = totalValue;
+        this.valueUnit = valueUnit;
+        this.valueSale = valueSale;
+        this.status = status;
+        this.dtRegister = dtRegister;
+    }
 
     public Integer getId() {
         return id;
@@ -72,8 +61,8 @@ public class StockEntity {
         return quantity;
     }
 
-    public void setQuantity(Long quantityActual) {
-        this.quantity = quantityActual;
+    public void setQuantity(Long quantity) {
+        this.quantity = quantity;
     }
 
     public BigDecimal getTotalValue() {
