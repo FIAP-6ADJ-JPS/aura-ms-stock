@@ -1,0 +1,39 @@
+services:
+  # Stock Microservice
+  stock_db:
+    image: postgres:13
+    container_name: stock_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: aura_ms_stock
+    ports:
+      - "5435:5432"
+    volumes:
+      - stock_pgdata:/var/lib/postgresql/data
+    networks:
+      - aura_network
+
+  stock_flyway:
+    image: flyway/flyway:10.12.0
+    container_name: stock_flyway
+    depends_on:
+      - stock_db
+    command: [
+      "migrate",
+      "-url=jdbc:postgresql://stock_postgres_db:5435/aura_ms_stock",
+      "-user=postgres",
+      "-password=postgres"
+    ]
+    volumes:
+      - ./aura-ms-stock/src/main/resources/db/migration:/flyway/sql
+    networks:
+      - aura_network
+
+networks:
+  aura_network:
+    driver: bridge
+
+volumes:
+  stock_pgdata:

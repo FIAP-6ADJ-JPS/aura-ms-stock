@@ -1,5 +1,6 @@
 package com.postech.auramsstock.application;
 
+import com.postech.auramsstock.adapters.dto.RequestStockReserveDTO;
 import com.postech.auramsstock.database.StockRepository;
 import com.postech.auramsstock.database.jpa.entity.StockEntity;
 import lombok.RequiredArgsConstructor;
@@ -17,49 +18,49 @@ public class StockReserver {
     private final StockRepository stockRepository;
 
     @Transactional
-    public boolean decreaseStock(String skuProduct, Integer quantity) {
-        log.info("Attempting to decrease stock for SKU: {} by quantity: {}", skuProduct, quantity);
+    public boolean reserveProcess(RequestStockReserveDTO requestStockReserveDTO) {
+        log.info("Tentando reservar o estoque para SKU: {} e quantidade: {}", requestStockReserveDTO.getSku(), requestStockReserveDTO.getQuantity());
 
-        Optional<StockEntity> stockOptional = stockRepository.findBySkuProduct(skuProduct);
+        Optional<StockEntity> stockOptional = stockRepository.findBySkuProduct(requestStockReserveDTO.getSku());
 
         if (stockOptional.isEmpty()) {
-            log.warn("Stock not found for SKU: {}", skuProduct);
+            log.warn("Estoque não disponível SKU: {}", requestStockReserveDTO.getSku());
             return false;
         }
 
         StockEntity stock = stockOptional.get();
 
-        if (stock.getQuantity() < quantity) {
-            log.warn("Insufficient stock for SKU: {}. Available: {}, Requested: {}", skuProduct, stock.getQuantity(), quantity);
+        if (stock.getQuantity() < requestStockReserveDTO.getQuantity()) {
+            log.warn("Estoque insuficiente SKU: {}. Disponível: {}, Solitidado: {}", requestStockReserveDTO.getSku(), stock.getQuantity(), requestStockReserveDTO.getQuantity());
             return false;
         }
 
-        stock.setQuantity(stock.getQuantity() - quantity);
+        stock.setQuantity(stock.getQuantity() - requestStockReserveDTO.getQuantity());
         stockRepository.save(stock);
 
-        log.info("Stock decreased successfully. New quantity: {}", stock.getQuantity());
+        log.info("Estoque reservado com sucesso, quandidade atual disponível: {}", stock.getQuantity());
         return true;
     }
 
     @Transactional
-    public void returnStock(String skuProduct, Long quantity) {
-        log.info("Returning stock for SKU: {} by quantity: {}", skuProduct, quantity);
+    public void returnStock(RequestStockReserveDTO requestStockReserveDTO) {
+        log.info("Retornando ao estoque o SKU: {} e a quantidade: {}", requestStockReserveDTO.getSku(), requestStockReserveDTO.getQuantity());
 
-        Optional<StockEntity> stockOptional = stockRepository.findBySkuProduct(skuProduct);
+        Optional<StockEntity> stockOptional = stockRepository.findBySkuProduct(requestStockReserveDTO.getSku());
 
         if (stockOptional.isEmpty()) {
-            log.warn("Stock not found for SKU: {}, creating new stock record", skuProduct);
+            log.warn("Estoque não encontrado SKU: {}, criando uma nova gravação", requestStockReserveDTO.getSku());
             StockEntity newStock = new StockEntity();
-            newStock.setSkuProduct(skuProduct);
-            newStock.setQuantity(quantity);
+            newStock.setSkuProduct(requestStockReserveDTO.getSku());
+            newStock.setQuantity(requestStockReserveDTO.getQuantity());
             stockRepository.save(newStock);
             return;
         }
 
         StockEntity stock = stockOptional.get();
-        stock.setQuantity(stock.getQuantity() + quantity);
+        stock.setQuantity(stock.getQuantity() + requestStockReserveDTO.getQuantity());
         stockRepository.save(stock);
 
-        log.info("Stock returned successfully. New quantity: {}", stock.getQuantity());
+        log.info("Estoque retornado com sucesso, retornando a quantidade para: {}", stock.getQuantity());
     }
 }

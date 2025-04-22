@@ -8,5 +8,6 @@ import java.util.Optional;
 @Repository
 public interface StockRepository {
     StockEntity save(StockEntity stockEntity);
-    Optional<StockEntity> findBySkuProduct(String stockEntity);
+
+    Optional<StockEntity> findBySkuProduct(String stockSkuProduct);
 }

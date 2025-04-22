@@ -25,7 +25,7 @@ public class StockEntity {
     @Column(name = "NAME_PRODUCT", nullable = false, length = 100)
     private String nameProduct;
 
-    @Column(name = "QUANTITY_ACTUAL", nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false, precision = 10, scale = 2)
     private Long quantity;
 
     @Column(name = "TOTAL_VALUE", precision = 10, scale = 2)

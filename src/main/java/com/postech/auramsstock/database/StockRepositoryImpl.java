@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class StockRepositoryImpl implements StockRepository{
+public class StockRepositoryImpl implements StockRepository {
 
     private final StockJpaRepository stockJpaRepository;
     private final ModelMapper modelMapper;
@@ -24,7 +24,11 @@ public class StockRepositoryImpl implements StockRepository{
     }
 
     @Override
-    public Optional<StockEntity> findBySkuProduct(String stockEntity) {
-        return Optional.empty();
+    public Optional<StockEntity> findBySkuProduct(String sku) {
+        if (sku == null || sku.isEmpty()) {
+            throw new IllegalArgumentException("SKU Não pode ser vazio");
+        }
+        return stockJpaRepository.findBySkuProduct(sku);
     }
+
 }

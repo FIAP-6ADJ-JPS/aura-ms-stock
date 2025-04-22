@@ -4,8 +4,9 @@ info:
   description: Documentação da API Padrão.
   version: 1.0.0
 servers:
-  - url: http://localhost:8082
+  - url: http://localhost:8005
     description: Servidor local
+
 paths:
   /exemplo:
     get:
