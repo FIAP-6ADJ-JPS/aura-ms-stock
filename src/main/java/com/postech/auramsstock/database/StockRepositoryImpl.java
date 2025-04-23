@@ -31,4 +31,41 @@ public class StockRepositoryImpl implements StockRepository {
         return stockJpaRepository.findBySkuProduct(sku);
     }
 
+    @Override
+    public Optional<StockEntity> findById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID não pode ser nulo");
+        }
+        return stockJpaRepository.findById(id.longValue());
+    }
+
+    @Override
+    public StockEntity updateStock(Long id, StockEntity stockEntity) {
+        if (id == null || stockEntity == null) {
+            throw new IllegalArgumentException("ID e StockEntity não podem ser nulos");
+        }
+
+        Optional<StockEntity> existingStock = stockJpaRepository.findById(id);
+        if (existingStock.isEmpty()) {
+            throw new IllegalArgumentException("Estoque com o ID fornecido não encontrado");
+        }
+
+        StockEntity updatedStock = existingStock.get();
+        updatedStock.setQuantity(stockEntity.getQuantity());
+        updatedStock.setValueUnit(stockEntity.getValueUnit());
+        updatedStock.setSkuProduct(stockEntity.getSkuProduct());
+        updatedStock.setNameProduct(stockEntity.getNameProduct());
+        updatedStock.setValueSale(stockEntity.getValueSale());
+
+        return stockJpaRepository.save(updatedStock);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID não pode ser nulo");
+        }
+        stockJpaRepository.deleteById(id);
+    }
+
 }

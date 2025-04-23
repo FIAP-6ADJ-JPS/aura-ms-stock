@@ -1,7 +1,14 @@
 package com.postech.auramsstock.adapters;
 
 import com.postech.auramsstock.adapters.dto.RequestStockReserveDTO;
-import com.postech.auramsstock.application.StockReserver;
+import com.postech.auramsstock.adapters.dto.StockDTO;
+import com.postech.auramsstock.application.DeleteStockUseCase;
+import com.postech.auramsstock.application.FindStockUseCase;
+import com.postech.auramsstock.application.StockReserverUseCase;
+import com.postech.auramsstock.application.UpdateStockUseCase;
+import com.postech.auramsstock.database.jpa.entity.StockEntity;
+import com.postech.auramsstock.domain.Stock;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,23 +16,49 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/v1/stocks")
 public class StockController {
 
-    private final StockReserver stockReserver;
+    private final StockReserverUseCase stockReserverUseCase;
+    private final FindStockUseCase findStockUseCase;
+    private final UpdateStockUseCase updateStock;
+    private final DeleteStockUseCase deleteStockUseCase;
+    private final ModelMapper modelMapper;
 
-    public StockController(StockReserver stockReserver) {
-        this.stockReserver = stockReserver;
+    public StockController(StockReserverUseCase stockReserverUseCase, FindStockUseCase findStockUseCase,
+                           UpdateStockUseCase updateStock, DeleteStockUseCase deleteStockUseCase, ModelMapper modelMapper) {
+        this.stockReserverUseCase = stockReserverUseCase;
+        this.findStockUseCase = findStockUseCase;
+        this.updateStock = updateStock;
+        this.deleteStockUseCase = deleteStockUseCase;
+        this.modelMapper = modelMapper;
     }
 
     @PostMapping("/new-reserve")
     public ResponseEntity<Boolean> stockReservetion(@RequestBody RequestStockReserveDTO requestStockReserveDTO) {
-        stockReserver.reserveProcess(requestStockReserveDTO);
+        stockReserverUseCase.reserveProcess(requestStockReserveDTO);
         return ResponseEntity.ok(true);
     }
 
-    @PutMapping("/return")
+    @PostMapping("/return")
     public ResponseEntity<Boolean> stockReturn(@RequestBody RequestStockReserveDTO requestStockReserveDTO) {
-        stockReserver.returnStock(requestStockReserveDTO);
+        stockReserverUseCase.returnStock(requestStockReserveDTO);
         return ResponseEntity.ok(true);
     }
 
+    @GetMapping("/check-reserve")
+    public ResponseEntity<Boolean> checkStockReserve(@RequestParam String skuProduct) {
+        return ResponseEntity.ok(findStockUseCase.checkStockReserve(skuProduct));
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Boolean> deleteStock(@PathVariable Long id) {
+        deleteStockUseCase.delete(id);
+        return ResponseEntity.ok(true);
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<StockDTO> updateStock(@PathVariable Long id, @RequestBody StockDTO stockDTO) {
+        Stock updatedStock = updateStock.updateStock(id, stockDTO);
+        StockDTO updatedStockDTO = modelMapper.map(updatedStock, StockDTO.class);
+        return ResponseEntity.ok(updatedStockDTO);
+    }
 
 }

@@ -8,6 +8,8 @@ import java.util.Optional;
 @Repository
 public interface StockRepository {
     StockEntity save(StockEntity stockEntity);
-
     Optional<StockEntity> findBySkuProduct(String stockSkuProduct);
+    Optional<StockEntity> findById(Long id);
+    StockEntity updateStock(Long id, StockEntity stockEntity);
+    void deleteById(Long id);
 }
