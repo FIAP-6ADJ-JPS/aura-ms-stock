@@ -1,6 +1,6 @@
 # AURA MS Stock
 
-Este microsserviço é parte da arquitetura **AURA MS Stock**, fornecendo funcionalidades de gerenciamento de estoque.
+Este microsserviço é parte da arquitetura **AURA MS STOCK**, fornecendo funcionalidades de gerenciamento de estoque.
 É uma aplicação Spring Boot projetada com uma abordagem de arquitetura limpa. Ela gerencia dados de clientes com validação e persistência em um banco de dados PostgreSQL.
 
 ## Stack Tecnológica
