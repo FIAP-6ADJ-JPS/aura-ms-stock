@@ -5,6 +5,7 @@ import com.postech.auramsstock.database.jpa.repository.StockJpaRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -67,5 +68,36 @@ public class StockRepositoryImpl implements StockRepository {
         }
         stockJpaRepository.deleteById(id);
     }
+
+    @Override
+    public List<StockEntity> findAllBySku(List<String> skuProducts) {
+        if (skuProducts == null || skuProducts.isEmpty()) {
+            throw new IllegalArgumentException("Lista de SKU não pode ser vazia");
+        }
+        return stockJpaRepository.findAllBySkuProductIn(skuProducts);
+    }
+
+    @Override
+    public boolean reserveBySkuAndQuantity(String sku, int quantity) {
+        if (sku == null || sku.isEmpty()) {
+            throw new IllegalArgumentException("SKU não pode ser vazio");
+        }
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("Quantidade deve ser maior que zero");
+        }
+        Optional<StockEntity> stockOptional = stockJpaRepository.findBySkuProduct(sku);
+        if (stockOptional.isPresent()) {
+            StockEntity stock = stockOptional.get();
+            if (stock.getQuantity() >= quantity) {
+                stock.setQuantity(stock.getQuantity() - quantity);
+                stockJpaRepository.save(stock);
+                return true;
+            } else {
+                throw new IllegalArgumentException("Quantidade solicitada maior que a disponível");
+            }
+        }
+        return false;
+    }
+
 
 }

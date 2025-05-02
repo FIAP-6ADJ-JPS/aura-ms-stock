@@ -15,11 +15,6 @@ public class FindStockUseCase {
         this.stockRepository = stockRepository;
     }
 
-    public boolean checkStockReserve(String skuProduct) {
-        Optional<StockEntity> stockOptional = stockRepository.findBySkuProduct(skuProduct);
-        return stockOptional.isPresent() && stockOptional.get().getQuantity() > 0;
-    }
-
     public Optional<StockEntity> findById(Long id) {
         return stockRepository.findById(id);
     }

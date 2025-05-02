@@ -1,13 +1,13 @@
 package com.postech.auramsstock.adapters.dto;
 
-public class RequestStockReserveDTO {
+public class ReserveStockDTO {
     private String sku;
     private Long quantity;
 
-    public RequestStockReserveDTO() {
+    public ReserveStockDTO() {
     }
 
-    public RequestStockReserveDTO(String sku, Long quantity) {
+    public ReserveStockDTO(String sku, Long quantity) {
         this.sku = sku;
         this.quantity = quantity;
     }
